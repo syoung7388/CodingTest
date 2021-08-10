@@ -1,40 +1,29 @@
 from collections import deque
-N, M = map(int, input().split())
-water = deque()
-Q = deque()
-gra = [list(map(str, input())) for _ in range(N)]
-dis = [[-1]*M for _ in range(N)]
-for i in range(N):
-    for j in range(M):
-        if gra[i][j] == '*':
-            water.append((i, j))
-        if gra[i][j] == 'S':
-            dis[i][j] = 0
-            Q.append((i, j))
-        if gra[i][j] == 'D':
-            end = (i, j)
-
-dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
-     
-
-while Q:
-    for _ in range(len(water)):
-        wx, wy = water.popleft()
-        for k in range(4):
-            wxx, wyy = dx[k]+wx, dy[k]+wy
-            if 0<=wxx<N and 0<=wyy<M and gra[wxx][wyy] == '.' and dis[wxx][wyy] == -1:
-                water.append((wxx, wyy))
-                gra[wxx][wyy] = '*'
-
-    x, y = Q.popleft()
-    for h in range(4):
-        xx, yy = dx[h]+x, dy[h]+y
-        if not (0<=xx<N and 0<=yy<M) or gra[xx][yy] == '*':
-            continue
-        if  (gra[xx][yy] == '.' or gra[xx][yy] == 'D') and dis[xx][yy] == -1:
-            dis[xx][yy]= dis[x][y]+1
-            Q.append((xx, yy))
-if dis[end[0]][end[1]] == -1:
-    print("KAKTUS")
-else:
-    print(dis[end[0]][end[1]])
+if __name__ == "__main__":
+    M, N = map(int, input().split())
+    gra= [list(map(int, input().split())) for _ in range(M)]
+    dis= [[[0]*4 for _ in range(N)] for _ in range(M)]
+    sx, sy, sd = map(int, input().split())
+    ex, ey, ed = map(int, input().split())
+    dis[sx-1][sy-1][sd-1] = 1
+    Q=deque()
+    Q.append((sx-1, sy-1, sd-1,0))
+    XY = [[0,1], [0, -1], [0,1], [0,-1]]
+    change = [[2,3], [2,3], [0,1], [0,1]]   
+    while Q:
+        x, y, d , cnt = Q.popleft() 
+        if (x,y,d) == (ex-1, ey-1, ed-1):
+            print(cnt)
+            break
+        
+        for i in range(1, 4):
+            xx, yy = XY[d][0]*i +x, XY[d][1]*i +y
+            if not(0<=xx<M and 0<=yy<N) or gra[xx][yy] == 1:
+                break
+            if dis[xx][yy][d] == 0:
+                dis[xx][yy][d] = 1
+                Q.append((xx, yy, d, cnt+1))
+        for nd in change[d]:
+            if dis[x][y][nd] == 0:
+                dis[x][y][nd] =1
+                Q.append((x, y, nd,cnt+1))
