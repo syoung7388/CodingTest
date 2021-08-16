@@ -1,18 +1,26 @@
-def DFS(now):
-    ch[now] = 1    
-    for next in G[now]:
-        if ch[next] == 0:
-            DFS(next)
+from collections import deque
 
-if __name__ == "__main__":
-    N = int(input())
-    G = [[] for _ in range(N)]
-    
-    for _ in range(int(input())):
-        a, b = map(int, input().split())
-        G[a-1].append(b-1)
-        G[b-1].append(a-1)
-    ch = [0]*N
-    DFS(0)
-    print(G)
-    print(ch.count(1)-1)
+
+S, E = map(int, input().split())
+
+Max = 100000
+dis = [[-1, 0] for _ in range(Max+1)]
+
+dis[S] = [0, 1]
+Q = deque()
+Q.append(S)
+
+while Q:
+    now = Q.popleft()
+    if now == E:
+        break
+    for next in (now+1, now-1, now*2):
+        if not(0<=next<=Max): continue
+        if dis[next][0] == -1:
+            dis[next][0] = dis[now]+1
+            dis[next][1] = dis[now][1]
+            Q.append(next)
+        elif dis[next][0] == dis[now][0]+1:
+            dis[next][1] += 1
+print(dis[E][0])
+print(dis[E][1])
