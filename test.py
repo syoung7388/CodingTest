@@ -1,9 +1,7 @@
-for _ in range(int(input())):
-    N = int(input())
-    dy = [0]*(N+1)
-    for i in range(N+1):
-        if i == 0 or i == 1:
-            dy[i] = 0
-        else:
-            dy[i] = dy[i-2]+2
-    print(dy)
+N, K = map(int, input().split())
+dy = [0]*(K+1)
+for _ in range(N):
+    w, v = map(int, input().split())
+    for i in range(K, w-1, -1):
+        dy[i] = max(dy[i], dy[i-w]+v)
+print(dy[K])
