@@ -1,21 +1,14 @@
-N = int(input())
-nums = list(map(int, input().split()))
+s1 = list(map(str, input()))
+s2 = list(map(str, input()))
+n1, n2 = len(s1), len(s2)
+dy = [['']*(n2+1) for _ in range(n1+1)]
+for i in range(1, n1+1):
+    for j in range(1, n2+1):
+        if s1[i-1] == s2[j-1]:
+            dy[i][j] = dy[i-1][j-1] + s1[i-1]
+        else:
+            dy[i][j] = dy[i-1][j] if len(dy[i-1][j]) > len(dy[i][j-1]) else dy[i][j-1]
 
-dy = [[0 for _ in range(21)] for _ in range(N-1)]
+print(len(dy[-1][-1]))
+print(dy[-1][-1])
 
-
-
-dy[0][nums[0]] = 1
-for i in range(1, N-1):
-    for j in range(21):
-        if dy[i-1][j] == 0: continue
-
-        prev = j
-        next = nums[i]
-
-        if 0<=prev+next<=20:
-            dy[i][prev+next] += dy[i-1][prev]
-        if 0<=prev-next<=20:
-            dy[i][prev-next] += dy[i-1][prev]
-
-print(dy[N-2][nums[-1]])
