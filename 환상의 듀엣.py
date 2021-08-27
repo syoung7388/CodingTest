@@ -1,40 +1,31 @@
+import sys
+input = sys.stdin.readline
+sys.setrecursionlimit(10**6)
 
-
-import math
+#main
 N = int(input())
-H = [0]+list(map(int, input().split()))
+um = [0]+list(map(int, input().split()))
+dp = [[-1]*(N+1) for _ in range(N+1)]
 
-dp = [[math.inf]*(N+1) for _ in range(N+1)]
-dp[0][0] = 0
+def getHim(now, next):
+    return abs(um[now]-um[next])
 
-for i in range(N): #덕이
-    for j in range(N):#원이
-        next = max(i, j)+1
+def Choose(x, y):
+    if x == N or y == N: return 0
+    if dp[x][y] != -1: return dp[x][y]
+    
+    pick= max(x, y)+1
 
-        print(i, j)
+    if x == 0:
+        dp[x][y] = min(Choose(pick, y),Choose(x, pick)+getHim(y, pick))
+    elif y == 0:
+        dp[x][y] = min(Choose(pick, y)+getHim(x, pick), Choose(x, pick))
+    else:
+        dp[x][y] = min(Choose(pick, y)+getHim(x, pick), 
+                   Choose(x, pick)+getHim(y, pick))
+    return dp[x][y]
+    
+#res
+print(Choose(0,0))
 
-        # 덕이가 음을 바꾸기
-        plus = abs(H[i]-H[next]) if i != 0 else 0 #i = 0일때
-        dp[next][j] = min(dp[next][j], dp[i][j]+plus)
-
-        for d in dp:
-            print(d)
-        print()
-
-        #원이가 음을 바꾸는 경우
-
-        plus = abs(H[j]-H[next]) if j != 0 else 0
-        dp[i][next] = min(dp[i][next], dp[i][j]+plus)
-        for d in dp:
-            print(d)
-        print()
-
-
-
-for d in dp:
-    print(d)
-print()
-
-
-print(min(min(dp[N]), min(row[N] for row in dp)))
 
