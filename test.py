@@ -1,27 +1,37 @@
 
-def getRes(x, y, dy):
-    r = 2147000000
-    print("=========")
-    for i in range(x+1, y):
-        print(i, end=" ")
-        if dy[i-1]&dy[i] == 0:   
-            return 0
+
+
+
+def Back(x, y):
+    if x == 0 or y ==0 :return
+    global res
+    if s1[x-1] == s2[y-1]:
+        res = s1[x-1]+res
+        Back(x-1, y-1)
+    else:
+        if dp[x-1][y]>= dp[x][y-1]:
+            Back(x-1, y)
         else:
-            r = min(dy[i-1]&dy[i],r)
-    print(r)
-    return r
-                
+            Back(x, y-1)
+            
 
-def solution(m, b):
-    res = []
-    cnt = 0
-    for k in m:
-        res.append(getRes(cnt,k+cnt, b))
-        cnt += k
-    return res
+s1 = list(map(str, input()))
+s2 = list(map(str, input()))
+n1, n2 = len(s1), len(s2)
+dp = [[0]*(n2+1) for _ in range(n1+1)]
+
+for i in range(1, n1+1):
+    for j in range(1, n2+1):
+        if s1[i-1] == s2[j-1]:
+            dp[i][j] = dp[i-1][j-1]+1
+        else:
+            dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
 
-print(solution([2,5],[3,2,1,9, 1, 3, 4 ]))
+print(dp[-1][-1])
 
 
-print(9&1&3&4)
+res = ""
+Back(n1, n2)
+print(res)
+
