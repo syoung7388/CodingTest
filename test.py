@@ -1,41 +1,46 @@
+import heapq
+def solution(n, k, cmd):
 
-def changeS(time):
-    h, m, s = time.split(':')
-    return h*60*60 + m *60+ s
-
-def Res(s):
-    return '{:02d}:{:02d}:{:02d}'.format(s//3600, s%3600//60,s%3600%60 )
-
-def solution(play_time, adv_time, logs):
-
-    adv_time = changeS(adv_time)
-
-    dp = [0]*360001
-
-    for l in logs:
-        st = changeS(l[0])
-        ed = changeS(l[1])
-        dp[st] += 1
-        dp[ed] -= 1
-
-    for j in range(1, 360001):
-        dp[j] += dp[j-1]
-
-
-    maxl, maxs = 0, dp[:adv_time]
-    s = maxs
-
-    for i in range(1, 360001):
-
-        s = s-dp[i-1]+dp[i+adv_time]
-
-        if s > maxs:
-            maxl = i
-            maxs = s
-            
-    return Res(maxl)
-
-
+    left, right, delete = [], [], []
+    
+    #오른쪽은 최솟값이 맨앞에 위치
+    for i in range(n):
+        heapq.heappush(right, i)
+    
+    #왼쪽은 최댓값이 맨앞 위치
+    for i in range(k):
+        heapq.heappush(left, -heapq.heappop(right))
         
-
+    print("left:", left)
+    print("right:", right)        
+    for c in  cmd:
+        print(c)
+        if len(c) > 1:
+            move = int(c.split()[-1])
+            if c.startswith("D"):
+                for _ in range(move):
+                    #오른쪽 heap 에서 왼쪽 heap으로 값을 이동
+                    if right:
+                        heapq.heappush(left, -heapq.heappop(right))
+            elif c.startswith("U"):
+                for _ in range(move):
+                    if left:
+                        heapq.heappush(right, -heapq.heappop(left))
+        elif c == "C":
+            delete.append(heapq.heappop(right))
+            if not right:
+                heapq.heappush(right, -heapq.heappop(left))
+        elif c == "Z":
+            repair = delete.pop()
+            
+            if repair < right[0]:
+                heapq.heappush(left, -repair)
+            else:
+                heapq.heappush(right, repair)
+        print("left:", left)
+        print("right:", right)
+        print("=======================")
+print(solution(8, 2 ,["D 2","C","U 3","C","D 4","C","U 2","Z","Z"]))                
+                    
+                    
         
