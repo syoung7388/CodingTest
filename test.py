@@ -1,37 +1,24 @@
-def seconds(s):
-    h, m, s = map(int, s.split(":"))
-    return h*3600+m*60+s
-def hms(s):
-    h, m, s = s//3600 , (s%3600)//60, (s%3600)%60
-    return '{:02d}:{:02d}:{:02d}'.format(h, m, s)
+import sys
+sys.setrecursionlimit(10**6)
+def getHims(now, next):
+    if now == 0:
+        return 0
+    return abs(um[next-1]-um[now-1])
 
-def solution(play, adv, logs):
-    play = seconds(play)
-    adv = seconds(adv)
-    if play <= adv:
-        return "00:00:00"
+def Pick(x, y):
     
-    dp = [0]*(360001)
+    if x > N-1 or y > N-1: return 0
+    if dp[x][y] != -1:
+        return dp[x][y]
+    next = max(x, y)+1
+    duck = Pick(next, y) + getHims(x, next)
+    won = Pick(x, next)+getHims(y, next)
     
-    for l in logs:
-        st, ed= l.split("-")
-        st = seconds(st)
-        ed = seconds(ed)
-        dp[st] += 1
-        dp[ed] -= -1
-    
-    for i in range(1, 360001):
-        dp[i] += dp[i-1]
+    dp[x][y] = min(duck, won)
+    return dp[x][y]
 
-    res= 0
-    S = sum(dp[:adv]) #이전 합계
-    maxad = S
-    
-    for j in range(1, 360001-adv):
-        S = S - dp[j-1] + dp[j+adv-1]
-        if S > maxad:
-            res = j
-            maxad = S
-    print(j)
-    return hms(res)
-        
+
+N = int(input())
+um = list(map(int, input().split()))
+dp = [[-1]*(N+1) for _ in range(N+1)]
+print(Pick(0, 0))
