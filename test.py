@@ -1,24 +1,41 @@
-import sys
-sys.setrecursionlimit(10**6)
-def getHims(now, next):
-    if now == 0:
-        return 0
-    return abs(um[next-1]-um[now-1])
+from collections import deque
 
-def Pick(x, y):
+
+def change(S, x1, x2):
+    S[x1], S[x2] = S[x2], S[x1]
+    return ''.join(S)
     
-    if x > N-1 or y > N-1: return 0
-    if dp[x][y] != -1:
-        return dp[x][y]
-    next = max(x, y)+1
-    duck = Pick(next, y) + getHims(x, next)
-    won = Pick(x, next)+getHims(y, next)
+
+Q = deque()
+ch = set()
+S = ""
+
+for _ in range(3):
+    S += ''.join(list(map(str, input().split())))
+
+
+Q.append((S, 0))
+ch.add(S)
+
+res = -1
+dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
+while Q:
+    st, cnt = Q.popleft()
+    if st == "123456780":
+        res = cnt
+        break
+    zero = st.index('0')
+
+    x, y = zero//3, zero%3
+
+    for k in range(4):
+        xx, yy = x+dx[k], y+dy[k]
+        if not (0<=xx<3 and 0<=yy<3): continue
+
+        nst = change(list(st), x*3+y, xx*3+yy)
+
+        if not nst in ch:
+            ch.add(nst)
+            Q.append((nst, cnt+1))
+print(res)   
     
-    dp[x][y] = min(duck, won)
-    return dp[x][y]
-
-
-N = int(input())
-um = list(map(int, input().split()))
-dp = [[-1]*(N+1) for _ in range(N+1)]
-print(Pick(0, 0))
