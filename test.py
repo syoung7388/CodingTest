@@ -1,41 +1,57 @@
-from collections import deque
-
-
-def change(S, x1, x2):
-    S[x1], S[x2] = S[x2], S[x1]
-    return ''.join(S)
+import math
+def solution(fees, records):
     
+    In =[]
+    Out = []
+    for r in records:
+        t, n, info = r.split()
+        t1, t2 = map(int, t.split(':'))
+        t = t1*60+t2
+        if info == "IN":
+            In.append((int(n), t))
+        else:
+            Out.append((int(n), t))
 
-Q = deque()
-ch = set()
-S = ""
+    In.sort(reverse = True)
+    Out.sort(reverse = True)
 
-for _ in range(3):
-    S += ''.join(list(map(str, input().split())))
+    res = {}
 
 
-Q.append((S, 0))
-ch.add(S)
+    while In and Out:
+        if In[-1][0] == Out[-1][0]:
+            i = In.pop()
+            o = Out.pop()
+            time = o[1]-i[1]
+        else:
+            i = In.pop()
+            time = 1439-i[1]
 
-res = -1
-dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
-while Q:
-    st, cnt = Q.popleft()
-    if st == "123456780":
-        res = cnt
-        break
-    zero = st.index('0')
+        if i[0] in res:
+            res[i[0]] += time
+        else:
+            res[i[0]] = time
 
-    x, y = zero//3, zero%3
+    if In:
+        i = In.pop()
+        time = 1439-i[1]
+        if i[0] in res:
+            res[i[0]] += time
+        else:
+            res[i[0]] = time
 
-    for k in range(4):
-        xx, yy = x+dx[k], y+dy[k]
-        if not (0<=xx<3 and 0<=yy<3): continue
 
-        nst = change(list(st), x*3+y, xx*3+yy)
+    r = []
+    for idx, v in res.items():
+        if v <= fees[0]:
+            money = fees[1]
+        else:
+            money = fees[1]+math.ceil((v-fees[0])/fees[2])*fees[3]
 
-        if not nst in ch:
-            ch.add(nst)
-            Q.append((nst, cnt+1))
-print(res)   
-    
+        r.append(money)
+    return r           
+
+
+#print(solution([180, 5000, 10, 600], ["05:34 5961 IN", "06:00 0000 IN", "06:34 0000 OUT", "07:59 5961 OUT", "07:59 0148 IN", "18:59 0000 IN", "19:09 0148 OUT", "22:59 5961 IN", "23:00 5961 OUT"]))
+print(solution([120, 0, 60, 591], ["16:00 3961 IN", "16:00 0202 IN", "18:00 3961 OUT", "18:00 0202 OUT", "23:58 3961 IN"]))
+print(solution(	[1, 461, 1, 10], ["00:00 1234 IN"]))
