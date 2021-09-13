@@ -11,3 +11,4 @@ for _ in range(int(input())):
             dp[i][j] = dp[i-1][j-1]+dp[i][j-1]
 
     print(dp[-1][-1])
+  
