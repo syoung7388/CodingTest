@@ -9,9 +9,6 @@ while  True:
 
 while True:
     puz = [0]*26
-    
-
-    
     s = input()
     if s == '#':
         break
@@ -19,43 +16,38 @@ while True:
     
     for p in s:
         puz[ord(p)-65] += 1
-
-    ch = puz[:]
     anw = [0]*26
 
-    for ws in word:
-        puz = ch[:]
-        for w in ws:
-            if puz[ord(w)-65] == 0:
-                break
+    res = {}
+    for i in s: # 선택단어
+        res[i] = 0
+        for w in word:
+            if i not in w: continue
+            ch = puz[:]
+            for j in w:
+                if ch[ord(j) -65] == 0:
+                    break
+                else:
+                    ch[ord(j)-65] -= 1
             else:
-                puz[ord(w)-65] -=1
-        else:
-            for w in set(ws):
-                anw[ord(w)-65] += 1
-                
+                res[i] += 1
+    res= sorted(res.items(), key = lambda x : (x[1],x[0]))
+    Min = res[0][1]
+    Max = res[-1][1]
+
+    r1= ""
+    r2 = ""
 
 
-    Min = 2147000000
-    Max = 0
-    for i in range(26):
-        if anw[i] == 0: continue
-        if anw[i] < Min:
-            Min = anw[i]
-        if anw[i] > Max:
-            Max = anw[i]
 
-    res1 = ""
-    res2 = ""
-    for i in range(26):
-        if anw[i] == Min:
-            res1+=chr(i+65)
-        if anw[i] ==Max:
-            res2 += chr(i+65)
-    print(res1, Min, res2, Max)
-            
+    for r in res:
+        if r[1] == Min:
+            r1 += r[0]
+        if r[1] == Max:
+            r2 += r[0]
+    print(r1,Min, r2, Max)
+
     
-            
             
 
 
