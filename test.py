@@ -1,18 +1,26 @@
-L, R = map(str, input().split())
 
-llen = len(L)
-rlen = len(R)
+def DFS(now):
+    global cnt
+    if not G[now]:
+        cnt += 1
+        return
+    for next in G[now]:
+        DFS(next)
 
+N = int(input())
+nodes = list(map(int, input().split()))
+delete = int(input())
+
+G = [[] for _ in range(N)]
+
+for i in range(N):
+    if nodes[i] == -1:
+        root = i
+        continue
+    if i == delete: 
+        continue
+    G[nodes[i]].append(i)
 cnt = 0
-if llen != rlen:
-    print(cnt)
-    break
-else:
-    for l in range(llen):
-        if L[l] != R[l]:
-            break
-        if L[l] == '8':
-            cnt += 1
-    print(cnt)
-            
-    
+if root != delete:
+    DFS(root)
+print(cnt)
