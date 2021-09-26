@@ -1,22 +1,27 @@
-def DFS(last, L):
-    if L == N:
-        return 1
-    r = 0
-    for key in dic.keys():
-        if dic[key] != 0 and last != key:
-            dic[key] -= 1
-            r += DFS(key, L+1)
-            dic[key] += 1
-    return r 
+N, r, c = map(int, input().split())
 
-S = input()
+pos = (0, 0)
+v = 0
 
-dic = {}
-for s in S:
-    if s in dic:
-        dic[s] += 1
-    else:
-        dic[s] = 1
-N = len(S)
 
-print(DFS(None, 0))      
+while True:
+
+    
+    if pos == (r, c):
+        print(v)
+        break
+    plusx = 2**(N-1)
+    plusv = plusx*plusx
+    
+    
+    if pos[0]+plusx <= r and pos[1]+plusx<=c:
+        pos = (pos[0]+plusx, pos[1]+plusx)
+        v += plusv*3
+    elif pos[0]+plusx <= r:
+        pos = (pos[0]+plusx, pos[1])
+        v += plusv*2
+    elif pos[1]+plusx <= c:
+        pos = (pos[0], pos[1]+plusx)
+        v += plus
+    N -= 1
+    
