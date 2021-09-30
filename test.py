@@ -1,24 +1,22 @@
-long = list(map(int, input().split()))
-short = list(map(int, input().split()))
-
-L = len(long)
-S = len(short)
-
-tot = L+S+S-2
-ch = [0]*tot
-minlen = L+S-1
-
-for i in range(L):
-    ch[i+S-1] = long[i]
-
-for i in range(tot-S):#0 ~ 15
-    arr = ch[:]
-    for j in range(S):
-        if arr[i+j] + short[j] == 4:
-            break
-        arr[i+j] = 3
-    else:
-        idx = [x for x in range(tot) if arr[x]]
-        minlen = min(minlen, max(idx)-min(idx))
+def getStr(w, h):
+    if w == 0 and h == 0: return 1
+    if dp[w][h] != -1: return dp[w][h]
+    dp[w][h] = 0
+    if w > 0:
+        dp[w][h] += getStr(w-1, h+1)
+    if h > 0:
+        dp[w][h] += getStr(w, h-1)
+    return dp[w][h]
     
-print(minlen+1)
+    
+    
+    
+while True:
+    N = int(input())
+    if N == 0:
+        break
+        
+    dp = [[-1]*((N*2)+1) for _ in range(N+1)]
+    
+    
+    print(getStr(N, 0)) #전체, 반알
