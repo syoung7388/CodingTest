@@ -1,22 +1,24 @@
-def getStr(w, h):
-    if w == 0 and h == 0: return 1
-    if dp[w][h] != -1: return dp[w][h]
-    dp[w][h] = 0
-    if w > 0:
-        dp[w][h] += getStr(w-1, h+1)
-    if h > 0:
-        dp[w][h] += getStr(w, h-1)
-    return dp[w][h]
-    
-    
-    
-    
-while True:
-    N = int(input())
-    if N == 0:
-        break
-        
-    dp = [[-1]*((N*2)+1) for _ in range(N+1)]
-    
-    
-    print(getStr(N, 0)) #전체, 반알
+N = int(input())
+zu = list(map(int, input().split()))
+
+
+
+arr = []
+arr.append(min(zu[0], zu[5]))
+arr.append(min(zu[1], zu[4]))
+arr.append(min(zu[2], zu[3]))
+arr.sort()
+
+res = 0
+
+len3 = sum(arr)
+len2 = arr[0]+arr[1]
+len1 = arr[0]
+
+cnt3 = 4
+cnt2 = (N-2)*4 + (N-1)*4
+cnt1 = (N-2)*(N-2) + (N-2)*(N-1)*4
+
+
+res += (cnt1*len1 + cnt2*len2 + cnt3*len3)
+print(res)
