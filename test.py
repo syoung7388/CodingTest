@@ -1,25 +1,19 @@
-def DFS(now, v):
-    global res
-    ch[now] = 1
-    if now == e-1:
-        res = v
-        return 
-    for nv, nt in G[now]:
-        if ch[nt] == 0:
-            DFS(nt, v+nv)
-    return
+def Send(w, h):
+    if dp[w][h] != -1: return dp[w][h]
+    dp[w][h] = 0
+    if w == 0 and h == 0: return 1
+    
+   
+    if w > 0:
+        dp[w][h] += Send(w-1, h+1)
+    if h > 0:
+        dp[w][h] += Send(w, h-1)
+    return dp[w][h]
+ 
 
-N, M = map(int, input().split())
-
-G = [[] for _ in range(N)]
-for _ in range(N-1):
-    a, b, v = map(int, input().split())
-    G[a-1].append((v, b-1))
-    G[b-1].append((v, a-1))
-
-for _ in range(M):
-    s, e = map(int, input().split())
-    ch = [0]*(N)
-    res = 0
-    DFS(s-1, 0)
-    print(res)
+dp = [[-1]*(31) for _ in range(61)]
+while True:
+    N = int(input())
+    if N == 0:
+        break
+    print(Send(N, 0))
