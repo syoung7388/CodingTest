@@ -1,19 +1,22 @@
-def Send(w, h):
-    if dp[w][h] != -1: return dp[w][h]
-    dp[w][h] = 0
-    if w == 0 and h == 0: return 1
-    
-   
-    if w > 0:
-        dp[w][h] += Send(w-1, h+1)
-    if h > 0:
-        dp[w][h] += Send(w, h-1)
-    return dp[w][h]
- 
+N = int(input())
+arr = [list(map(int, input().split())) for _ in range(N)]
+arr.sort(reverse = True)
 
-dp = [[-1]*(31) for _ in range(61)]
-while True:
-    N = int(input())
-    if N == 0:
-        break
-    print(Send(N, 0))
+res = 0
+for i in range(N):
+    y, x1, x2 = arr[i][0], arr[i][1], arr[i][2]
+    right = True
+    left = True
+    for j in range(i+1, N):
+        if y == arr[j][0]: continue
+        if right and arr[j][1]<=x1<arr[j][2]:
+            right = False
+            res += y - arr[j][0]
+        if left and arr[j][1] <=x2-1<arr[j][2]:
+            left = False
+            res += y-arr[j][0]
+    if left:
+        res += y
+    if right:
+        res += y
+print(res)
