@@ -1,13 +1,19 @@
-W, H, f, c, x1, y1, x2, y2 = map(int, input().split())
+from collections import deque
 
-tot = W*H
-plus = (x2-x1)*(y2-y1)*(c+1)
-tot -= plus
+A, B = map(int, input().split())
 
-if f <= W//2:
-    if x1 < f:
-        tot -= (min(f, x2) - x1)*(y2-y1)*(c+1)
-else:
-    if x1+f < W:
-        tot -= ( min(x2+f, W)-(x1+f))*(y2-y1)*(c+1)
-print(tot)
+Q = deque([(A, 1)])
+ch = set()
+
+res = -1
+while Q:
+    X, cnt = Q.popleft()
+    if X == B:
+        res = cnt
+    if X*2 <= B and X*2 not in ch:
+        ch.add(X*2)
+        Q.append((X*2, cnt+1))
+    if X*10 + 1 <= B  and  X*10 + 1 not in ch:
+        ch.add(X*10+1)
+        Q.append((X*10 + 1, cnt+1))
+print(res)
