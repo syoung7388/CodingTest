@@ -1,19 +1,41 @@
-from collections import deque
 
-A, B = map(int, input().split())
+import sys
+sys.setrecursionlimit(10**6)
 
-Q = deque([(A, 1)])
-ch = set()
+def DFS(S, L):
+    print(L, P)
+    if S  == N:
+        res.append(''.join(map(str, P)))
+        return
+    for i in X:
+        if ch[i] == 0: continue
+        nt = L+i+1
+        if nt >= N*2 or P[nt] != -1 or P[L] != -1: continue
+        ch[i] -= 1
+        P[nt] = i
+        P[L] = i
+        if not -1 in P:
+            DFS(L+1, 0)
+        else:
+            DFS(L+1, P.index(-1))
+        P[nt] = -1
+        ch[i] += 1
+        P[L] = -1
 
-res = -1
-while Q:
-    X, cnt = Q.popleft()
-    if X == B:
-        res = cnt
-    if X*2 <= B and X*2 not in ch:
-        ch.add(X*2)
-        Q.append((X*2, cnt+1))
-    if X*10 + 1 <= B  and  X*10 + 1 not in ch:
-        ch.add(X*10+1)
-        Q.append((X*10 + 1, cnt+1))
-print(res)
+N = int(input())
+X = list(map(int, input().split()))
+P = [-1]*(N*2)
+ch = [0]*(max(X) + 1)
+for x in X:
+    ch[x] = 1
+    
+res = []
+DFS(0, 0)
+if len(res) != 0:
+    res.sort()
+    for r in res[0]:
+        print(r, end = " ")
+else:
+    print(-1)
+
+
