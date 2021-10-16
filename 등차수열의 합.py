@@ -1,41 +1,46 @@
+import sys
+import math
 
 
-
-def f(x):
-    n = (x-a)/d[K] + 1
-    return n
+def getIdx(n):
+    return (n-fir[K])/d[K]+1
 
 left = int(input())
 right = int(input())
 K = int(input())
-
-l = left
-
-fir = {2:3, 3:6, 4:14, 5:10}
+fir = {2:3, 3:6, 4:14, 5:15}
 d = {2:1, 3:3, 4:2, 5:5}
 
-res = 0
-a = 0
+
+if left == right :
+
+    arr = getIdx(left)
+
+    if left >= fir[K] and arr == int(arr):
+        print(1)
+
+    elif K == 4 and left == 10: #10 10 4 => 무조건 1
+        print(1)
+
+    else:
+        print(0)
+
+    sys.exit(0)
 
 if left <= fir[K]:
-    left = fir[K]
+    lt = 1
+else:
+    lt = math.ceil(getIdx(left))
     
-while True:
-    num = f(left)
-    if num == int(num):
-        a = left
-        break
-    left += 1
-    
-while True:
-    num = f(right)
-    if num == int(num):
-        res = int(num)
-        break
-    else:
-        right -= 1
-if K == 4 and l <= 10: #10 추가 시켜주기
+rt = int(getIdx(right))
+
+
+res = max(rt - lt +1, 0)
+
+if K == 4 and left <= 10 and right >= 10:
     res += 1
 
-
 print(res)
+
+
+
