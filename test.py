@@ -1,26 +1,16 @@
-dic = {2:1, 3:7, 4:4, 5:2, 6:6, 7:8}
-
-for _ in range(int(input())):
-    N = int(input())
+M = int(input())
+S = input()
+N = len(S)
+res = 2147000000
+for p in range(1, M+1):
+    cnt = 0
+    for i in range(p):
+        dic = {'A':0, 'C':0, 'G':0, 'T':0}
+        for j in range(i, N, p):
+            dic[S[j]] += 1
+        cnt += (sum(dic.values()) - max(dic.values()))
+    res = min(cnt, res)
+        
     
-    if N <= 7:
-        small = dic[N]
-    elif N%7 == 1:
-        small = '10'+'8'*(N//7-1)
-    elif N%7 == 3:
-        if N == 10:
-            small = 22
-        else:
-            small = '200' + '8'*(N//7-2)
-    elif N%7 == 4:
-        small = '20'+'8'*(N//7-1)
-    else:
-        a = N%7 if N%7 else 7
-        b = N//7 if N%7 else N//7-1
-        small = str(dic[a]) + '8'*(b)
-    cnt = N//2
-    if N%2 == 0:
-        large = '1'*(cnt)
-    else:
-        large = '7'+'1'*(cnt-1)
-    print(small, large)
+    
+print(res)
