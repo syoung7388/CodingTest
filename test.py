@@ -1,24 +1,42 @@
+from collections import deque
+dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
+
+def DFS(x, y):
+    gra[x][y] = D
+    for k in range(4):
+        xx, yy = dx[k]+x, dy[k]+y
+        if not (0<=xx<N and 0<=yy<N) or gra[xx][yy] < 0: continue
+        if gra[xx][yy] == 1:
+            DFS(xx, yy)
+        else:
+            if (x, y) not in Q:
+                Q.append((x, y))
+         
+
 N = int(input())
-arr = [tuple(map(int, input().split())) for _ in range(N)]
-arr.sort(key = lambda x : x[0], reverse = True)
+gra = [list(map(int, input().split())) for _ in range(N)]
 
-res = 0
+Q = deque()
+D = -1
 for i in range(N):
-    a, a1, a2 = arr[i]
-    left = False
-    right = False
-    for j in range(i+1, N):
-        b, b1, b2 = arr[j]
-        if a == b: continue
-        if not left and b1 <= a1 < b2:
-            left = True
-            res += a-b
-        if not right and b1 <= a2-1 < b2:
-
-            right = True
-            res += a-b
-    if not left:
-        res += a
-    if not right:
-        res += a
+    for j in range(N):
+        if gra[i][j] == 1:
+            DFS(i, j)
+            D -= 1
+L = 0
+res = 2147000000
+while Q:
+    L += 1
+    for _ in range(len(Q)):
+        x, y = Q.popleft()
+        for k in range(4):
+            xx, yy = dx[k]+x, dy[k]+y
+            if not (0<=xx<N and 0<=yy<N): continue
+            if gra[xx][yy] == 0:
+                gra[xx][yy] = gra[x][y]
+                Q.append((xx, yy))
+            elif gra[x][y] < gra[xx][yy]:
+                res = min(res, L*2-1)
+            elif gra[x][y] > gra[xx][yy]:
+                res = min(res, (L-1)*2)
 print(res)
