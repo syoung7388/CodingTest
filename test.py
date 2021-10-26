@@ -1,42 +1,48 @@
-from collections import deque
-dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
+import sys
 
-def DFS(x, y):
-    gra[x][y] = D
-    for k in range(4):
-        xx, yy = dx[k]+x, dy[k]+y
-        if not (0<=xx<N and 0<=yy<N) or gra[xx][yy] < 0: continue
-        if gra[xx][yy] == 1:
-            DFS(xx, yy)
+ch = [[] for _ in range(26)]
+
+arr = set()
+for idx, s in enumerate(sys.stdin.readline().rstrip()):
+    ch[ord(s) - 97].append(idx)
+    arr.add(ord(s) - 97)
+    
+arr = sorted(arr)
+N = len(arr)
+
+
+dp = [[[0]*2 for _ in range(2)] for _ in range(N+1)]
+
+
+for i in range(1, N+1):
+    for j in range(2):
+        if j == 1: ch[arr[i-1]].reverse()
+
+        n = dp[i-1][0][1] + abs(dp[i-1][0][0] - ch[arr[i-1]][0])
+        y = dp[i-1][1][1] + abs(dp[i-1][1][0] - ch[arr[i-1]][0])
+
+        flag = False
+        
+        if n<y:
+            pos = dp[i-1][0][0]
+            flag = True
         else:
-            if (x, y) not in Q:
-                Q.append((x, y))
-         
+            pos = dp[i-1][1][0]
 
-N = int(input())
-gra = [list(map(int, input().split())) for _ in range(N)]
+            
+        cnt = 0
+        for c in ch[arr[i-1]]:
+            cnt += abs(c-pos)
+            pos = c
 
-Q = deque()
-D = -1
-for i in range(N):
-    for j in range(N):
-        if gra[i][j] == 1:
-            DFS(i, j)
-            D -= 1
-L = 0
+        temp =  dp[i-1][0][1]if flag else dp[i-1][1][1]
+     
+        dp[i][j][0] = pos
+        dp[i][j][1] = temp + cnt + len(ch[arr[i-1]])
+       
+
+
 res = 2147000000
-while Q:
-    L += 1
-    for _ in range(len(Q)):
-        x, y = Q.popleft()
-        for k in range(4):
-            xx, yy = dx[k]+x, dy[k]+y
-            if not (0<=xx<N and 0<=yy<N): continue
-            if gra[xx][yy] == 0:
-                gra[xx][yy] = gra[x][y]
-                Q.append((xx, yy))
-            elif gra[x][y] < gra[xx][yy]:
-                res = min(res, L*2-1)
-            elif gra[x][y] > gra[xx][yy]:
-                res = min(res, (L-1)*2)
+for d in dp[-1]:
+    res = min(res, d[1])
 print(res)
