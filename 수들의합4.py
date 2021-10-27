@@ -48,4 +48,3 @@ for com in combinations(range(1, N), 2):
         res += 1
         
 print(res + arr.count(K))
-
