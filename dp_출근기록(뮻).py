@@ -33,4 +33,3 @@ dp = [[[[[0]*4 for _ in range(4)] for _ in range(C+1)] for _ in range(B+1)] for 
 ABC(0, 0, 0, "", 0, 0)
 
 print(-1)
-
