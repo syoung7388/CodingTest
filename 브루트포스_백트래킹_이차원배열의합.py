@@ -1,0 +1,145 @@
+import sys
+input = sys.stdin.readline
+from itertools import permutations
+
+
+def Row():
+    global Max
+
+    row = [[[] for _ in range(10)] for _ in range(6)]
+    row_sum = [[0]*10 for _ in range(6)]
+    for i in range(6):
+        a, b, c, d, e, f = gra[i][0], gra[i][1], gra[i][2], gra[i][3], gra[i][4], gra[i][5]
+        for j in range(10): #60
+            row[i][j] = [a, b, c, d, e, f]
+            row_sum[i][j] =a+b+c+d+e+f 
+            a += 1
+            b += 1
+            c += 1
+            d += 1
+            e += 1
+            f += 1
+            if a == 10: a=0
+            if b == 10: b=0
+            if c == 10: c=0
+            if d == 10: d=0
+            if e == 10: e=0
+            if f == 10: f=0
+    
+    R = []
+
+    for per in P: #151200
+        s = 0
+        for idx, p in enumerate(per):
+            s += row_sum[idx][p]
+        if s > Max:
+            R = per
+            Max = s
+    if R:
+        for i in range(6):
+            gra[i] = row[i][R[i]]
+def Col():
+    global Max
+    col = [[[] for _ in range(10)] for _ in range(6)]
+    col_sum = [[0]*10 for _ in range(6)]
+    for i in range(6):
+        a, b, c, d, e, f = gra[0][i], gra[1][i], gra[2][i], gra[3][i], gra[4][i], gra[5][i]
+        for j in range(10): #60
+            col[i][j] = [a, b, c, d, e, f]
+            col_sum[i][j] =a+b+c+d+e+f 
+            a += 1
+            b += 1
+            c += 1
+            d += 1
+            e += 1
+            f += 1
+            if a == 10: a=0
+            if b == 10: b=0
+            if c == 10: c=0
+            if d == 10: d=0
+            if e == 10: e=0
+            if f == 10: f=0
+
+
+    C= []
+    for per in P: #151200
+        s = 0
+        for idx, p in enumerate(per):
+            s += col_sum[idx][p]
+        if s > Max:
+            C = per
+            Max = s
+
+    if C:
+        for i in range(6):
+            for j in range(6):
+                cnt += 1
+                gra[j][i] = arr[i][c[i]][j]
+def Dia():
+    a, b, c, d, e, f = gra[0][0], gra[1][1], gra[2][2], gra[3][3], gra[4][4], gra[5][5]
+    max_d = a+b+c+d+e+f
+    for i in range(10):
+        a += 1
+        b += 1
+        c += 1
+        d += 1
+        e += 1
+        f += 1
+        if a == 10: a=0
+        if b == 10: b=0
+        if c == 10: c=0
+        if d == 10: d=0
+        if e == 10: e=0
+        if f == 10: f=0   
+        s = a+b+c+d+e+f
+        if s > max_d:
+            max_d = s
+            gra[0][0], gra[1][1], gra[2][2], gra[3][3], gra[4][4], gra[5][5] = a, b, c, d, e, f
+
+
+    a, b, c, d, e, f = gra[0][5], gra[1][4], gra[2][3], gra[3][2], gra[4][1], gra[5][0]
+    max_d = a+b+c+d+e+f
+    for i in range(10):
+        a += 1
+        b += 1
+        c += 1
+        d += 1
+        e += 1
+        f += 1
+        if a == 10: a=0
+        if b == 10: b=0
+        if c == 10: c=0
+        if d == 10: d=0
+        if e == 10: e=0
+        if f == 10: f=0   
+        s = a+b+c+d+e+f
+        if s > max_d:
+            max_d = s
+            gra[0][5], gra[1][4], gra[2][3], gra[3][2], gra[4][1], gra[5][0] = a, b, c, d, e, f    
+
+    
+cnt = 0
+bro = [list(map(int, input().split())) for _ in range(6)]
+gra = bro[:]
+
+Max = 0
+P = permutations(range(10), 6)
+Row()
+Col()
+Dia()
+s1 = 0
+for  i in range(6):
+    for j in range(6):
+        s1 += gra[i][j]
+Max = 0
+gra = bro[:]
+Col()
+Row()
+Dia()
+
+s2 = 0
+for  i in range(6):
+    for j in range(6):
+        s2 += gra[i][j]
+
+print(max(s1, s2))
