@@ -1,31 +1,36 @@
-from datetime import datetime, timedelta
+import heapq
 import sys
-from collections import defaultdict
 input = sys.stdin.readline
-import re
-rent = defaultdict(lambda : defaultdict(int))
-
-N, limit, fine = map(str, input().split())
-fine = int(fine)
-ld, lh, lm = re.split('/|:', limit)
-limit = timedelta(days =int(ld), hours = int(lh), minutes = int(lm))
-
-res = defaultdict(int)
-for _ in range(int(N)):
-    date, time, item, name = map(str, input().split())
-
-    now = datetime.strptime(date+" "+time, "%Y-%m-%d %H:%M")
-    if item in rent and name in rent[item]:
-        cha = ((now-rent[item][name])-limit).total_seconds()
-        if cha > 0:
-            res[name] += int(cha//60)*fine
+def wolf():
+    H = [(0, 1, False)] #val, 현재위치, flag
+    ch = [0]*(N+1)
+    while H:
+        v, now, flag = heapq.heappop(H)
+        if ch[now][flag] == 1: continue    
+        ch[now][flag] = 1
         
-    else:
-        rent[item][name] =now
-        
+        for gv, gn in G[now]:
+            if flag:
+                mv = v+gv
+            else:
+                mv = v+gv*4
+            if mv < dis_w[gn]:
+                dis_w[gn] = mv
+                heapq.heappush(H, (mv, ng, not(flag)))
     
-if res:
-    for r in sorted(res.items()):
-        print(r[0], r[1])
-else:
-    print(-1)
+Max = 2147000000
+N, M = map(int, input().split())
+G = [[] for _ in range(N+1)]
+
+for _ in range(N):
+    a, b, d = map(int, input().split())
+    G[a].append((d, b))
+    G[b].append((d, a))
+
+dis_w = [[Max]*2 for _ in range(N+1)]
+dis_w[1][1] = 0
+wolf()
+dis_f = [Max]*(N+1)
+fox()
+dis_f[1] = 0
+    
