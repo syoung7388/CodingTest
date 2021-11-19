@@ -1,36 +1,24 @@
-import heapq
-import sys
-input = sys.stdin.readline
-def wolf():
-    H = [(0, 1, False)] #val, 현재위치, flag
-    ch = [0]*(N+1)
-    while H:
-        v, now, flag = heapq.heappop(H)
-        if ch[now][flag] == 1: continue    
-        ch[now][flag] = 1
-        
-        for gv, gn in G[now]:
-            if flag:
-                mv = v+gv
-            else:
-                mv = v+gv*4
-            if mv < dis_w[gn]:
-                dis_w[gn] = mv
-                heapq.heappush(H, (mv, ng, not(flag)))
-    
-Max = 2147000000
-N, M = map(int, input().split())
-G = [[] for _ in range(N+1)]
+N, C, M = map(int, input().split())
+P = N*5
 
-for _ in range(N):
-    a, b, d = map(int, input().split())
-    G[a].append((d, b))
-    G[b].append((d, a))
+tab = [tuple(map(int, input().split())) for _ in range(N)]
 
-dis_w = [[Max]*2 for _ in range(N+1)]
-dis_w[1][1] = 0
-wolf()
-dis_f = [Max]*(N+1)
-fox()
-dis_f[1] = 0
-    
+dp = [[[-1]*(P+1) for _ in range(C+1)] for _ in range(N+1)]
+dp[0][0][0] = 0
+
+for i in range(N):
+    for j in range(C+1):
+        for k in range(P+1):
+            if dp[i][j][k] == -1: continue
+            dp[i+1][j][k] = max(dp[i+1][j][k], dp[i][j][k])
+            cpu, mem, prt = tab[i]
+            cpu = min(j+cpu, C)
+            dp[i+1][cpu][k+prt] = max(dp[i+1][cpu][k+prt], dp[i][j][k]+mem)
+res = 2147000000
+for i in range(1, P+1):
+    if dp[N][C][i] >= M and i < res:
+        res = i
+if res == 2147000000:
+    print(-1)
+else:
+    print(res)    

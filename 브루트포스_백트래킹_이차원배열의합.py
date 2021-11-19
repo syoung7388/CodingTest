@@ -7,10 +7,10 @@ def Row():
     global Max
 
     row = [[[] for _ in range(10)] for _ in range(6)]
-    row_sum = [[0]*10 for _ in range(6)]
+    #row_sum = [[0]*10 for _ in range(6)]
     for i in range(6):
-        a, b, c, d, e, f = gra[i][0], gra[i][1], gra[i][2], gra[i][3], gra[i][4], gra[i][5]
-        for j in range(10): #60
+        a, b, c, d, e, f = bro[i][0], bro[i][1], bro[i][2], bro[i][3], bro[i][4], bro[i][5]
+        for j in range(10): 
             row[i][j] = [a, b, c, d, e, f]
             row_sum[i][j] =a+b+c+d+e+f 
             a += 1
@@ -26,25 +26,16 @@ def Row():
             if e == 10: e=0
             if f == 10: f=0
 
-    
-    R = []
-
+            
     for per in product(range(10), repeat = 6): #151200
-
-        s = 0
+        R = []
         for idx, p in enumerate(per):
-            s += row_sum[idx][p]
-        if s > Max:
-            R = per
-            Max = s
-
-    if R:
-        for i in range(6):
-            gra[i] = row[i][R[i]]
-def Col():
-    global Max
+            R.append(row[idx][p])
+            Col(R)
+def Col(gra):
     col = [[[] for _ in range(10)] for _ in range(6)]
     col_sum = [[0]*10 for _ in range(6)]
+    max_sum = 0
     for i in range(6):
         a, b, c, d, e, f = gra[0][i], gra[1][i], gra[2][i], gra[3][i], gra[4][i], gra[5][i]
         for j in range(10): #60
@@ -64,12 +55,12 @@ def Col():
             if f == 10: f=0
 
 
-    C= []
+    C = []
     for per in  product(range(10), repeat = 6): #1000000
         s = 0
         for idx, p in enumerate(per):
             s += col_sum[idx][p]
-        if s > Max:
+        if s > max_sum:
             C = per
             Max = s
       
@@ -130,20 +121,6 @@ def Dia():
     
 cnt = 0
 bro = [list(map(int, input().split())) for _ in range(6)]
-gra = bro[:]
 
-"""
 
-Sum = 0
-for i in range(6):
-    for j in range(6):
-        Sum += gra[i][j]
-"""
-Max = 0
-Col()
-Row()
-Dia()
-
-print(gra)
-print(Max)
 
