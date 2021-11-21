@@ -43,5 +43,3 @@ if res > 10**9:
     print(res%10**9)
 else:
     print(res)
-
-    

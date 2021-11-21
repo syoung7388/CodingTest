@@ -1,70 +1,65 @@
 import sys
 input = sys.stdin.readline
-from itertools import product
-def PickCol(G):
-    global Max
-    col = [[[] for _ in range(10)] for _ in range(6)]
-    col_sum = [[0]*10 for _ in range(6)]
-    for i in range(6):
-        a, b, c, d, e, f = G[0][i], G[1][i], G[2][i], G[3][i], G[4][i], G[5][i]
-        for j in range(10): #60
-            col[i][j] = [a, b, c, d, e, f]
-            col_sum[i][j] =a+b+c+d+e+f 
-            a += 1
-            b += 1
-            c += 1
-            d += 1
-            e += 1
-            f += 1
-            if a == 10: a=0
-            if b == 10: b=0
-            if c == 10: c=0
-            if d == 10: d=0
-            if e == 10: e=0
-            if f == 10: f=0
-    C = []
-    for per in  product(range(10), repeat = 6): #1000000
-        s = 0
-        for idx, p in enumerate(per):
-            s += col_sum[idx][p]
-        if s > Max:
-            C = per
-            Max = s
-            
+import heapq
+
+sys.setrecursionlimit(100000)
+
+def find(x):
+    if head[x] == x:
+        return head[x]
+    head[x] = find(head[x])
+    return head[x]
+
+
+def union(a, b):
+    global S
+    x = find(a)
+    y = find(b)
+    if x == y: return 0
+    if x < y:
+        head[y] = x
+        head[b] = x
+        S -= nC2(counter[x])
+        S -= nC2(counter[y])
+        counter[x] += counter[y]
+        return x
+
+    else:
+        head[x] = y
+        head[a] = y
+        S -= nC2(counter[x])
+        S -= nC2(counter[y])
+        counter[y] += counter[x]
+        return y
     
-    if C:
-        for i in range(6):
-            for j in range(6):
-                
-                G[j][i] = col[i][C[i]][j]
-                
-    return G
+def nC2(a):
+    return a*(a-1)// 2
+        
 
-N = 6
-gra = [list(map(int, input().split())) for _ in range(N)]
-
-Max = 0
-
-row = [[[0]*6 for _ in range(10)] for _ in range(N)]
+N, M = map(int, input().split())
+H = []
+tot = 0
+for _ in range(M):
+    a, b,v = map(int, input().split())
+    heapq.heappush(H, (-v, a, b))
+    tot += v
 
 
-for i in range(N):
-    row[i][0] = gra[i]
+head = [x for x in range(N+1)]
+counter = [1]*(N+1)
 
 
+res = 0
+S = 0
+for _ in range(M):
+    v, a, b = heapq.heappop(H)
+    h = union(a, b)
+    if counter[h] == N: break
+    if h:
+        S += nC2(counter[h])
+    res += S*(-v)
+    tot += v
 
-for i in range(N):
-    for j in range(1,10):
-        for a in range(N):
-            row[i][j][a]  = row[i][j-1][a] + 1
-            if row[i][j][a] == 10:
-                row[i][j][a] = 0
+res += tot*nC2(N)
+print(res)
 
-
-
-for pro in product(range(10), repeat = 6):
-    G = []
-    for idx, p in enumerate(pro):
-        G.append(row[idx][p])
-
-    gra = PickCol(G)
