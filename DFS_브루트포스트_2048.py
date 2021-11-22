@@ -51,8 +51,7 @@ def Down(G):
     return list(map(list, zip(*result)))
  
 def DFS(L, g):
-    global res, cnt
-    cnt += 1
+    global res
     if L == 5:
         res = max(res, getmax(g))
         return
@@ -70,8 +69,5 @@ N = int(input())
 gra = [list(map(int, input().split())) for _ in range(N)]
 
 res = 0
-cnt = 0
 DFS(0, gra)
-
 print(res)
-
