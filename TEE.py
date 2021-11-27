@@ -2,51 +2,71 @@ import sys
 input = sys.stdin.readline
 from itertools import combinations
 
-def Move(pos):
-    global res
-    for i in range(N):
-        for j in range(M):
-            s = 0
-            for k in range(4):
-                xx, yy = pos[k][0]+i, pos[k][1]+j
-                if not (0<=xx<N and 0<=yy<M):
-                    break
-                s += gra[xx][yy]
-            else:
-                res = max(res, s)
+def check_dfs(x, y,ng,ch):
+    for garo, sero in ng[y]:
+        if garo >= x and not (garo, y, sero) in ch:
+            ch.add((garo, sero, y)) 
+            return check_dfs(garo, sero,ng, ch)
+    return y
+
+def check(g):
+    ng = [sorted(a[:]) for a in g]
+    for i in range(1, N+1):
+        arr = check_dfs(1, i,ng, set())
+        if arr != i:
+            return False
+    return True
+
+M, H, N = map(int, input().split())
 
 
-def Turn(pos, a1, a2, n):
+G = [[] for _ in range(N+1)] #a(출발세로선) ->b(도착세로선) #가로선은 v
+gra = [[0]*(M+1) for _ in range(N+1)]                            #G [b] -> [(v, b+1)]
 
-    t = [a1, a2]
-    flag = False
-    for _ in range(n):
-        ch = [[0]*M for _ in range(N)]
-        for x, y in pos:
-            ch[x][y] = 1
+for _ in range(H):
+    a, b = map(int, input().split())
+    G[b].append((a, b+1))
+    G[b+1].append((a, b))
+    gra[a][b] = 1
+    gra[a][b+1] = 1
 
+road = []
+for i in range(1, N+1):
+    for j in range(1, M):
+        if gra[i][j] == 0 and gra[i][j+1] == 0:
+            road.append((i, j, j+1))
 
-
-        
-        Move(pos)
-        for i in range(4):
-            a, b = pos[i]
-            pos[i] = (b, t[flag] - a -1)
-        flag = not(flag)
     
+res = 2147000000
 
-dx, dy = [-1, 0, 1, 0], [0, 1, 0, -1]
-N, M = map(int, input().split())
-gra = [list(map(int, input().split())) for _ in range(N)]
+for com in combinations(road, 1):
+    nG = [g[:] for g in G]
+    for a, b1, b2 in road:
+        nG[b1].append((a, b2))
+        nG[b2].append((a, b1))
+    if check(nG):
+        print(1)
+        sys.exit(0)
 
-res  =0
+for com in combinations(road, 2):
+    
+    nG = [g[:] for g in G]
+    for a, b1, b2 in road:
+        nG[b1].append((a, b2))
+        nG[b2].append((a, b1))
+    if check(nG):
+        print(2)
+        sys.exit(0)    
 
-Turn([(0,0),(0, 1), (1, 0), (2,0)], 3, 2, 4)
-Turn([(0,0),(0, 1), (1, 1), (2,1)], 3, 2, 4)
-Turn([(0,0),(0, 1), (0, 2), (0, 3)], 1, 4, 2)
-Turn([(0, 0), (0, 1), (1, 0), (1, 1)], 0, 0, 1)
-Turn([(0,0),(1, 0), (1, 1), (2,1)], 3, 0, 2)
-Turn([(0,1),(2, 1), (1, 0), (2,0)], 3, 0, 2)
-Turn([(0, 0), (1, 0), (2, 0), (1, 1)], 3, 2, 4)
-
-print(res)
+for com in combinations(road, 3):
+    
+    nG = [g[:] for g in G]
+    for a, b1, b2 in road:
+        nG[b1].append((a, b2))
+        nG[b2].append((a, b1))
+    if check(nG):
+        print(3)
+        sys.exit(0)    
+print(-1)
+            
+            

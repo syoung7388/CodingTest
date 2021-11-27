@@ -1,7 +1,3 @@
-import sys
-input = sys.stdin.readline
-
-
 def DFS(L, k):
     global res
     if L == M:
@@ -40,3 +36,4 @@ res = 2147000000
 DFS(0, 0) #M = 고른 개수 k = 치킨집 번호
 
 print(res)
+
