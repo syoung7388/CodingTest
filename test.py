@@ -1,42 +1,124 @@
+
 import sys
 input = sys.stdin.readline
 
 
-def DFS(L, k):
-    global res
-    if L == M:
-        tot_dis = 0
-        for hx, hy in home:
-            min_dis = 2147000000
-            for i in range(M):
-                cx, cy = chicken[P[i]]
-                min_dis = min(abs(hx-cx)+abs(hy-cy), min_dis)
-            tot_dis += min_dis
-        res = min(res, tot_dis)
-        return
-    if k >= C: return
+def Left(cmd):
+    if cmd[1] == '-':
+        st = (gra[0][0][0], gra[0][1][0], gra[0][2][0])
+        gra[0][0][0], gra[0][1][0], gra[0][2][0] =  gra[1][2][0], gra[1][1][0], gra[1][0][0]
+        gra[1][0][0], gra[1][1][0], gra[1][2][0] = gra[5][0][0], gra[5][1][0], gra[5][2][0]
+        gra[5][0][0], gra[5][1][0], gra[5][2][0] = gra[4][2][0], gra[4][1][0], gra[4][0][0]
+        gra[4][0][0], gra[4][1][0], gra[4][2][0] = st[0], st[1], st[2]
+    else:
+        st = (gra[0][0][0], gra[0][1][0], gra[0][2][0])
+        gra[0][0][0], gra[0][1][0], gra[0][2][0] = gra[4][0][0], gra[4][1][0], gra[4][2][0]
+        gra[4][0][0], gra[4][1][0], gra[4][2][0] = gra[5][2][0], gra[5][1][0], gra[5][0][0]
+        gra[5][0][0], gra[5][1][0], gra[5][2][0] = gra[1][0][0], gra[1][1][0] , gra[1][2][0]
+        gra[1][0][0], gra[1][1][0], gra[1][2][0] = st[2], st[1], st[0]
 
-    P[L] = k
-    DFS(L+1, k+1)
-    DFS(L, k+1)
+def Right(cmd):
+    if cmd[1] == '+':
+        st = (gra[0][0][2], gra[0][1][2], gra[0][2][2])
+        gra[0][0][2], gra[0][1][2], gra[0][2][2] =  gra[1][2][2], gra[1][1][2], gra[1][0][2]
+        gra[1][0][2], gra[1][1][2], gra[1][2][2] = gra[5][0][2], gra[5][1][2], gra[5][2][2]
+        gra[5][0][2], gra[5][1][2], gra[5][2][2] = gra[4][2][2], gra[4][1][2], gra[4][0][2]
+        gra[4][0][2], gra[4][1][2], gra[4][2][2] = st[0], st[1], st[2]
+    else:
+        st = (gra[0][0][2], gra[0][1][2], gra[0][2][2])
+        gra[0][0][2], gra[0][1][0], gra[0][2][2] = gra[4][0][2], gra[4][1][2], gra[4][2][2]
+        gra[4][0][2], gra[4][1][2], gra[4][2][2] = gra[5][0][2], gra[5][1][2], gra[5][2][2]
+        gra[5][0][2], gra[5][1][2], gra[5][2][2] = gra[1][0][2], gra[1][1][2] , gra[1][2][2]
+        gra[1][0][2], gra[1][1][2], gra[1][2][2] = st[2], st[1], st[0]    
 
 
+def Front(cmd):
 
-N, M = map(int, input().split())
-gra = [list(map(int, input().split())) for _ in range(N)]
+    if cmd[1] == '+':
+        a, b, c = gra[2][0][0], gra[2][1][0], gra[2][2][0]
+        gra[2][0][0], gra[2][1][0], gra[2][2][0] = gra[5][2][0], gra[5][2][1], gra[5][2][2]
+        gra[5][2][0], gra[5][2][1], gra[5][2][2] = gra[3][2][0], gra[3][1][0], gra[3][0][0]
+        gra[3][0][0], gra[3][1][0], gra[3][2][0] = gra[0][2][0], gra[0][2][1], gra[0][2][2]
+        gra[0][2][0], gra[0][2][1], gra[0][2][2] = c, b, a
+    else:
+        a, b, c =gra[2][0][0], gra[2][1][0], gra[2][2][0]
+        gra[2][0][0], gra[2][1][0], gra[2][2][0] = gra[0][2][2], gra[0][2][1], gra[0][2][0]
+        gra[0][2][0], gra[0][2][1], gra[0][2][2] = gra[3][0][0], gra[3][1][0], gra[3][2][0]
+        gra[3][0][0], gra[3][1][0], gra[3][2][0] = gra[5][2][2], gra[5][2][1], gra[5][2][0]
+        gra[5][2][0], gra[5][2][1], gra[5][2][2] = a, b, c
 
-home = []
-chicken = []
-for i in range(N):
-    for j in range(N):
-        if gra[i][j] == 1:
-            home.append((i, j))
-        elif gra[i][j] == 2:
-            chicken.append((i, j))
-C = len(chicken)
+        
+def Back(cmd):
+    if cmd[1] == '-':
+        a, b, c = gra[2][0][2], gra[2][1][2], gra[2][2][2]
+        gra[2][0][2], gra[2][1][2], gra[2][2][2] =gra[5][0][0], gra[5][0][1], gra[5][0][2]
+        gra[5][0][0], gra[5][0][1], gra[5][0][2] = gra[3][2][2], gra[3][1][2], gra[3][0][2]
+        gra[3][2][2], gra[3][1][2], gra[3][0][2] = gra[0][0][0], gra[0][0][1], gra[0][0][2]
+        gra[0][0][0], gra[0][0][1], gra[0][0][2] = c, b, a
+    else:
+        a, b, c = gra[2][0][2], gra[2][1][2], gra[2][2][2]
+        gra[2][0][2], gra[2][1][2], gra[2][2][2] = gra[0][0][2], gra[0][0][1], gra[0][0][0]
+        gra[0][0][0], gra[0][0][1], gra[0][0][2] = gra[3][0][2], gra[3][1][2], gra[3][2][2]
+        gra[3][0][2], gra[3][1][2], gra[3][2][2] = gra[5][0][2], gra[5][0][1], gra[5][0][0]
+        gra[5][0][0], gra[5][0][1], gra[5][0][2] = a, b, c
 
-P = [0]*(M)
-res = 2147000000
-DFS(0, 0) #M = 고른 개수 k = 치킨집 번호
+def Up(cmd):
+    if cmd[1] == '-':
+        a, b, c = gra[4][0][0], gra[4][0][1], gra[4][0][2]
+        gra[4][0][0], gra[4][0][1], gra[4][0][2] = gra[3][0][0], gra[3][0][1], gra[3][0][2]
+        gra[3][0][0], gra[3][0][1], gra[3][0][2] = gra[1][0][2], gra[1][0][1], gra[1][0][0]
+        gra[1][0][0], gra[1][0][1], gra[1][0][2] = gra[2][0][0], gra[2][0][1], gra[2][0][2]
+        gra[2][0][0], gra[2][0][1], gra[2][0][2] = c, b, a    
+    else:
+        a, b, c = gra[3][0][0], gra[3][0][1], gra[3][0][2] 
+        gra[3][0][0], gra[3][0][1], gra[3][0][2] = gra[4][0][0], gra[4][0][1], gra[4][0][2]
+        gra[4][0][0], gra[4][0][1], gra[4][0][2] = gra[2][0][2], gra[2][0][1], gra[2][0][0]
+        gra[2][0][0], gra[2][0][1], gra[2][0][2] = gra[1][0][0], gra[1][0][1], gra[1][0][2]
+        gra[1][0][0], gra[1][0][1], gra[1][0][2] = c, b, a
 
-print(res)
+def Down(cmd):
+    if cmd[1] == '+':
+        a, b, c = gra[4][2][0], gra[4][2][1], gra[4][2][2]
+        gra[4][2][0], gra[4][2][1], gra[4][2][2] = gra[3][2][0], gra[3][2][1], gra[3][2][2]
+        gra[3][2][0], gra[3][2][1], gra[3][2][2] = gra[1][2][2], gra[1][2][1], gra[1][2][0]
+        gra[1][2][0], gra[1][2][1], gra[1][2][2] = gra[2][2][0], gra[2][2][1], gra[2][2][2]
+        gra[2][2][0], gra[2][2][1], gra[2][2][2] = c, b, a
+    else:
+        a, b, c = gra[3][2][0], gra[3][2][1], gra[3][2][2] 
+        gra[3][2][0], gra[3][2][1], gra[3][2][2] = gra[4][2][0], gra[4][2][1], gra[4][2][2]
+        gra[4][2][0], gra[4][2][1], gra[4][2][2] = gra[2][2][2], gra[2][2][1], gra[2][2][0]
+        gra[2][2][0], gra[2][2][1], gra[2][2][2] = gra[1][2][0], gra[1][2][1], gra[1][2][2]
+        gra[1][2][0], gra[1][2][1], gra[1][2][2] = c, b, a
+
+dic = {'U':0, 'B':0, 'L':0, 'R':2, 'F':2, 'D':2}        
+
+for _ in range(int(input())):        
+    N = int(input())
+    gra = []
+    for color in ['w','o', 'g', 'b', 'r', 'y']:
+        gra.append([[color]*3 for _ in range(3)])
+    
+    arr = list(map(str, input().split()))
+
+    for a in arr:
+        if a[0] == 'L':
+            Left(a)
+        elif a[0] == 'R':
+            Right(a)
+        elif a[0] == 'B':
+            Back(a)
+        elif a[0] == 'F':
+            Front(a)
+        elif a[0] == 'U':
+            Up(a)
+        elif a[0] == 'D':
+            Down(a)
+            
+
+    for g in gra[0]:
+        print(g)
+        """
+        for i in g:
+            print(i)
+        print()
+        """
