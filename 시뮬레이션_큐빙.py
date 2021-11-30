@@ -1,95 +1,95 @@
+
 import sys
 input = sys.stdin.readline
 
-"""
-0    1   2
-rrr bbb ccc
-rrr bbb ccc
-rrr bbb ccc
 
-bf = rrr
-1 = bf
-bf = bbb
+def Left(cmd):
+    if cmd[1] == '-':
+        st = (gra[0][0][0], gra[0][1][0], gra[0][2][0])
+        gra[0][0][0], gra[0][1][0], gra[0][2][0] =  gra[1][2][0], gra[1][1][0], gra[1][0][0]
+        gra[1][0][0], gra[1][1][0], gra[1][2][0] = gra[5][0][0], gra[5][1][0], gra[5][2][0]
+        gra[5][0][0], gra[5][1][0], gra[5][2][0] = gra[4][2][0], gra[4][1][0], gra[4][0][0]
+        gra[4][0][0], gra[4][1][0], gra[4][2][0] = st[0], st[1], st[2]
+    else:
+        st = (gra[0][0][0], gra[0][1][0], gra[0][2][0])
+        gra[0][0][0], gra[0][1][0], gra[0][2][0] = gra[4][0][0], gra[4][1][0], gra[4][2][0]
+        gra[4][0][0], gra[4][1][0], gra[4][2][0] = gra[5][2][0], gra[5][1][0], gra[5][0][0]
+        gra[5][0][0], gra[5][1][0], gra[5][2][0] = gra[1][0][0], gra[1][1][0] , gra[1][2][0]
+        gra[1][0][0], gra[1][1][0], gra[1][2][0] = st[2], st[1], st[0]
 
-2 = bf
-bf = ccc
+def Right(cmd):
+    if cmd[1] == '+':
+        st = (gra[0][0][2], gra[0][1][2], gra[0][2][2])
+        gra[0][0][2], gra[0][1][2], gra[0][2][2] =  gra[1][2][2], gra[1][1][2], gra[1][0][2]
+        gra[1][0][2], gra[1][1][2], gra[1][2][2] = gra[5][0][2], gra[5][1][2], gra[5][2][2]
+        gra[5][0][2], gra[5][1][2], gra[5][2][2] = gra[4][2][2], gra[4][1][2], gra[4][0][2]
+        gra[4][0][2], gra[4][1][2], gra[4][2][2] = st[0], st[1], st[2]
+    else:
+        st = (gra[0][0][2], gra[0][1][2], gra[0][2][2])
+        gra[0][0][2], gra[0][1][0], gra[0][2][2] = gra[4][0][2], gra[4][1][2], gra[4][2][2]
+        gra[4][0][2], gra[4][1][2], gra[4][2][2] = gra[5][0][2], gra[5][1][2], gra[5][2][2]
+        gra[5][0][2], gra[5][1][2], gra[5][2][2] = gra[1][0][2], gra[1][1][2] , gra[1][2][2]
+        gra[1][0][2], gra[1][1][2], gra[1][2][2] = st[2], st[1], st[0]    
 
-3 = 0
-bf 
 
+def Front(cmd):
 
-
-"""
-
-
-
-
-def cmd(n, c):
-    if n == 'L':
-        if c == '+':
-            return [0, 4, 5, 1, 0]
-        if c == '-':
-            return [0, 1, 5, 4, 0]  
-    elif n == 'R':
-        if c == '+':
-            return [0, 1, 5, 4, 0]  
-        if c == '-':
-            return [0, 4, 5, 1, 0]     
-    elif n == 'D':
-        if c == '+':
-            return [1, 2, 4, 3, 1]
-        if c == '-':
-            return [1, 3, 4, 2, 1]
-    elif n == 'U':
-        if c == '+':
-            return [1, 3, 4, 2, 1]
-        if c == '-':
-            return [1, 2, 4, 3, 1]
-    elif n == 'B':
-        if c == '+':
-            return [0, 2, 5, 3, 0] 
-        if c == '-':
-            return [0, 3, 5, 2, 0]
-    elif n == 'F':
-        if c == '+':
-            return [0, 3, 5, 2, 0]
-        if c == '-':
-            return [0, 2, 5, 3, 0]
+    if cmd[1] == '+':
+        a, b, c = gra[2][0][0], gra[2][1][0], gra[2][2][0]
+        gra[2][0][0], gra[2][1][0], gra[2][2][0] = gra[5][2][0], gra[5][2][1], gra[5][2][2]
+        gra[5][2][0], gra[5][2][1], gra[5][2][2] = gra[3][2][0], gra[3][1][0], gra[3][0][0]
+        gra[3][0][0], gra[3][1][0], gra[3][2][0] = gra[0][2][0], gra[0][2][1], gra[0][2][2]
+        gra[0][2][0], gra[0][2][1], gra[0][2][2] = c, b, a
+    else:
+        a, b, c =gra[2][0][0], gra[2][1][0], gra[2][2][0]
+        gra[2][0][0], gra[2][1][0], gra[2][2][0] = gra[0][2][2], gra[0][2][1], gra[0][2][0]
+        gra[0][2][0], gra[0][2][1], gra[0][2][2] = gra[3][0][0], gra[3][1][0], gra[3][2][0]
+        gra[3][0][0], gra[3][1][0], gra[3][2][0] = gra[5][2][2], gra[5][2][1], gra[5][2][0]
+        gra[5][2][0], gra[5][2][1], gra[5][2][2] = a, b, c
 
         
-def sero_Turn(T, n, b):
-    bf = (gra[T[0]][0][n], gra[T[0]][1][n], gra[T[0]][2][n])
-    print(n, b)
-    for i in range(1, 5):
-        temp = (gra[T[i]][0][n], gra[T[i]][1][n], gra[T[i]][2][n])
-        if (n == 0 and b == '+') or (n == 2 and b == '-'):
-            if i%2 == 0:
-                gra[T[i]][2][n], gra[T[i]][1][n], gra[T[i]][0][n] = bf
-            else:
-                gra[T[i]][0][n], gra[T[i]][1][n], gra[T[i]][2][n] = bf
-        elif  (n == 2 and b == '+') or (n == 0 and b == '-'):
-            if i%2 == 0:
-                gra[T[i]][0][n], gra[T[i]][1][n], gra[T[i]][2][n] = bf
-            else:
-                gra[T[i]][2][n], gra[T[i]][1][n], gra[T[i]][0][n] = bf
+def Back(cmd):
+    if cmd[1] == '-':
+        a, b, c = gra[2][0][2], gra[2][1][2], gra[2][2][2]
+        gra[2][0][2], gra[2][1][2], gra[2][2][2] =gra[5][0][0], gra[5][0][1], gra[5][0][2]
+        gra[5][0][0], gra[5][0][1], gra[5][0][2] = gra[3][2][2], gra[3][1][2], gra[3][0][2]
+        gra[3][2][2], gra[3][1][2], gra[3][0][2] = gra[0][0][0], gra[0][0][1], gra[0][0][2]
+        gra[0][0][0], gra[0][0][1], gra[0][0][2] = c, b, a
+    else:
+        a, b, c = gra[2][0][2], gra[2][1][2], gra[2][2][2]
+        gra[2][0][2], gra[2][1][2], gra[2][2][2] = gra[0][0][2], gra[0][0][1], gra[0][0][0]
+        gra[0][0][0], gra[0][0][1], gra[0][0][2] = gra[3][0][2], gra[3][1][2], gra[3][2][2]
+        gra[3][0][2], gra[3][1][2], gra[3][2][2] = gra[5][0][2], gra[5][0][1], gra[5][0][0]
+        gra[5][0][0], gra[5][0][1], gra[5][0][2] = a, b, c
 
-        bf = temp
-    
+def Up(cmd):
+    if cmd[1] == '-':
+        a, b, c = gra[4][0][0], gra[4][0][1], gra[4][0][2]
+        gra[4][0][0], gra[4][0][1], gra[4][0][2] = gra[3][0][0], gra[3][0][1], gra[3][0][2]
+        gra[3][0][0], gra[3][0][1], gra[3][0][2] = gra[1][0][2], gra[1][0][1], gra[1][0][0]
+        gra[1][0][0], gra[1][0][1], gra[1][0][2] = gra[2][0][0], gra[2][0][1], gra[2][0][2]
+        gra[2][0][0], gra[2][0][1], gra[2][0][2] = c, b, a    
+    else:
+        a, b, c = gra[3][0][0], gra[3][0][1], gra[3][0][2] 
+        gra[3][0][0], gra[3][0][1], gra[3][0][2] = gra[4][0][0], gra[4][0][1], gra[4][0][2]
+        gra[4][0][0], gra[4][0][1], gra[4][0][2] = gra[2][0][2], gra[2][0][1], gra[2][0][0]
+        gra[2][0][0], gra[2][0][1], gra[2][0][2] = gra[1][0][0], gra[1][0][1], gra[1][0][2]
+        gra[1][0][0], gra[1][0][1], gra[1][0][2] = c, b, a
 
-def garo_Turn(T, n):
-    bf = gra[T[0]][n][:]
-    for i in range(1, 5):
-        #print(T[i])
-        #print("bf:", bf, "n:", n)
-        temp = gra[T[i]][n][:]
-        gra[T[i]][n] = bf
-        bf = temp
+def Down(cmd):
+    if cmd[1] == '+':
+        a, b, c = gra[4][2][0], gra[4][2][1], gra[4][2][2]
+        gra[4][2][0], gra[4][2][1], gra[4][2][2] = gra[3][2][0], gra[3][2][1], gra[3][2][2]
+        gra[3][2][0], gra[3][2][1], gra[3][2][2] = gra[1][2][2], gra[1][2][1], gra[1][2][0]
+        gra[1][2][0], gra[1][2][1], gra[1][2][2] = gra[2][2][0], gra[2][2][1], gra[2][2][2]
+        gra[2][2][0], gra[2][2][1], gra[2][2][2] = c, b, a
+    else:
+        a, b, c = gra[3][2][0], gra[3][2][1], gra[3][2][2] 
+        gra[3][2][0], gra[3][2][1], gra[3][2][2] = gra[4][2][0], gra[4][2][1], gra[4][2][2]
+        gra[4][2][0], gra[4][2][1], gra[4][2][2] = gra[2][2][2], gra[2][2][1], gra[2][2][0]
+        gra[2][2][0], gra[2][2][1], gra[2][2][2] = gra[1][2][0], gra[1][2][1], gra[1][2][2]
+        gra[1][2][0], gra[1][2][1], gra[1][2][2] = c, b, a
 
-        
-        
-    
-    
-    
 dic = {'U':0, 'B':0, 'L':0, 'R':2, 'F':2, 'D':2}        
 
 for _ in range(int(input())):        
@@ -98,26 +98,27 @@ for _ in range(int(input())):
     for color in ['w','o', 'g', 'b', 'r', 'y']:
         gra.append([[color]*3 for _ in range(3)])
     
-    arr = list(map(str, input().split())) 
-    
+    arr = list(map(str, input().split()))
+
     for a in arr:
-        print(a, "----------------")
-        nums = cmd(a[0], a[1])
-        if a[0] == 'L' or a[0] == 'R':
-            sero_Turn(nums, dic[a[0]], a[1])
-        else:
-            garo_Turn(nums, dic[a[0]])
-
-    for g in gra:
-        for a in g:
-            print(a)
-        print()
-    print()
-
-
+        if a[0] == 'L':
+            Left(a)
+        elif a[0] == 'R':
+            Right(a)
+        elif a[0] == 'B':
+            Back(a)
+        elif a[0] == 'F':
+            Front(a)
+        elif a[0] == 'U':
+            Up(a)
+        elif a[0] == 'D':
+            Down(a)
             
-    for i in range(3):
-        for j in range(3):
-            print(gra[0][i][j], end = "")
+
+    for g in gra[0]:
+        print(g)
+        """
+        for i in g:
+            print(i)
         print()
-    print()
+        """
