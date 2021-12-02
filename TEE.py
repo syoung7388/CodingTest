@@ -1,6 +1,51 @@
-from collections import deque
-Q = deque()
-Q.append((1, 2, 3))
-Q.append((2, 3, 4))
-Q = sorted(Q)
-print(Q.popleft())
+
+gra = [[1, 3, 6, 10, 11, 17, 18], [8, 18, 30, 35, 40, 48, 50], [10, 23, 39, 45, 51, 62, 65], [16, 35, 57, 69, 84, 99, 103], [25, 45, 76, 89, 113, 133, 138], [26, 47, 79, 93, 126, 155, 161], [27, 49, 82, 97, 131, 161, 168]]
+yul = [[1, 2, 3, 4, 1, 6, 1], [8, 10, 12, 5, 5, 8, 2], [10, 13, 16, 6, 6, 11, 3], [16, 19, 22, 12, 15, 15, 4], [25, 20, 31, 13, 24, 20, 5], [26, 21, 32, 14, 33, 29, 6], [27, 22, 33, 15, 34, 30, 7]]
+hang = [[1, 3, 6, 10, 11, 17, 18], [7, 15, 24, 25, 29, 31, 32], [2, 5, 9, 10, 11, 14, 15], [6, 12, 18, 24, 33, 37, 38], [9, 10, 19, 20, 29, 34, 35], [1, 2, 3, 4, 13, 22, 23], [1, 2, 3, 4, 5, 6, 7]]
+
+
+
+N = 7
+x= 1
+y = 3
+d1 = 2
+d2 = 2
+for aa in gra:
+    print(aa)
+print()
+
+a, b = x+d1-1, y
+one = gra[a][b]
+for i in range(d1):
+    nx, ny = x+i*1, y+i*-1
+    one -= yul[a][ny] - yul[nx-1][ny]
+
+
+
+#제 2구역
+a, b = x+d2, N-1
+two = gra[a][b] - gra[a][y]
+for i in range(1, d2+1):
+    nx, ny = x+i*1, y+i*1
+    two -= yul[a][ny] - yul[nx-1][ny]
+
+
+
+#제 3구역
+a, b = N-1, y - d1+d2 - 1
+tree = gra[a][b] - gra[x+d1-1][b]
+for i in range(d1):
+    nx, ny = (x+d1)+i*1, (y-d1)+i*1
+    tree -= yul[nx][ny] - yul[x+d1-1][ny]
+    
+#제 4구역
+a, b = N-1, N-1
+four = gra[a][b]- gra[a][y - d1+d2 - 1] - gra[x+d2][b] + gra[x+d2][y - d1+d2 - 1]
+
+for i in range(1, d2+1):
+    nx, ny = (x+d1)+i*1, (y+d1)+i*-1
+    print(nx, ny, "->",x+d2, ny)
+    four -= yul[nx][ny] - yul[x+d2][ny]
+    
+print(four)
+    

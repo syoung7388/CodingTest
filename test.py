@@ -1,62 +1,35 @@
 import sys
 input = sys.stdin.readline
-from itertools import combinations
-from collections import deque
-dx, dy  = [-1, 0, 1, 0], [0, 1, 0, -1]
-
-
-def expand(com):
-    global sec
-
-    Q = deque(com)
-    ch = [[-1]*N for _ in range(N)]
-    for c in com:
-        ch[c[0]][c[1]] = 0
-        gra[c[0]][c[1]] = 0
+sys.setrecursionlimit(10**6)
+def Z(lt, rt, f):
+    if dp[lt][rt][f] != -1: return dp[lt][rt][f]
+    
+    if f:
+        cur = rt
+    else:
+        cur = lt
         
-     
-    while Q:
-        x, y = Q.popleft()
-        for k in range(4):
-            xx, yy = dx[k]+x, dy[k]+y
-            if not (0<=xx<N and 0<=yy<N) or gra[xx][yy] == 1 : continue
-            if ch[xx][yy] == -1:
-                ch[xx][yy] = ch[x][y] + 1
-                if ch[xx][yy] >= sec: return
-                Q.append((xx, yy))
-
-
-    s = 0
-    for i in range(N):
-        for j in range(N):
-            if gra[i][j] == 1 or gra[i][j] == 2: continue
-            if ch[i][j] == -1: return
-            s = max(s, ch[i][j])
-            
-    for c in com:
-        gra[c[0]][c[1]] = 2       
-    sec = min(sec, s)
-                
+    on = watt[-1] -watt[rt] + watt[lt-1]
     
+    left = right = 2147000000
+    if lt > 1 :
+        left = Z(lt-1, rt, 0) + (dis[cur] - dis[lt-1])*on
+    if rt < N:
+        right = Z(lt, rt+1, 1) + (dis[rt+1]-dis[cur])*on
+    dp[lt][rt][f] = min(left, right)
+    return dp[lt][rt][f]
 
-
-
+        
+    
 N, M = map(int, input().split())
-gra = []
-virus = []
-for i in range(N):
-    a = list(map(int, input().split()))
-    for j in range(N):
-        if a[j] == 2:
-            virus.append((i, j))
-    gra.append(a)
 
+dis = [0]
+watt = [0]
+for _ in range(N):
+    a, b = map(int, input().split())
+    dis.append(a)
+    watt.append(watt[-1]+b)
 
-sec = 2147000000
-for com in combinations(virus, M):
-    expand(com)
-if sec == 2147000000:
-    print(-1)
-else:
-    print(sec)
-    
+dp = [[[-1]*2 for _ in range(N+1)] for _ in range(N+1)]
+dp[1][N][0] = dp[1][N][1] = 0
+print(Z(M, M, 0))
