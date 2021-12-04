@@ -1,47 +1,23 @@
+import sys
+input = sys.stdin.readline
 
+N, C, M = map(int, input().split())
+tab = [list(map(int, input().split())) for _ in range(N)]
 
-S = input()
-dic = dict()
-
-N = len(S)
+P = 5*101
+dp = [[[-1]*(P+1) for _ in range(C+1)] for _ in range(N+1)]
+dp[0][0][0] = 0
 for i in range(N):
-    if S[i] in dic:
-        dic[S[i]].append(i)
-    else:
-        dic[S[i]] = [i]
-M = len(dic)
-dic = sorted(dic.items())
-dp = [[[0]*2 for _ in range(2)] for _ in range(M+1)]
-
-for i in range(1, M+1):
-    arr = dic[i-1][1]
-
-    for j in range(2):
-        if j == 1: arr.reverse()
-
-        r0 = dp[i-1][0][1] + abs(dp[i-1][0][0] - arr[0])
-        r1 = dp[i-1][1][1] + abs(dp[i-1][1][0] - arr[0])
-        flag = True
-        if r0 < r1:
-            pos = dp[i-1][0][0]
-        else:
-            flag = False
-            pos = dp[i-1][1][0]
-            
-        dis = 0
-        for a in arr:
-            dis += abs(a - pos)
-            pos = a
-        
-        
-        if flag:
-            cnt =  dp[i-1][0][1] 
-        else:
-            cnt =  dp[i-1][1][1]
-        
-        
-        dp[i][j][0] = pos
-        dp[i][j][1] = cnt+dis+len(arr)
-
-        
-print(min(dp[-1][0][1], dp[-1][1][1]))
+    for j in range(C+1):
+        for p in range(P+1):
+            if dp[i][j][p] == -1: continue
+            c, m, pr = tab[i]
+            dp[i+1][j][p] = max(dp[i][j][p], dp[i+1][j][p])
+            c = min(C, c+j)
+            dp[i+1][c][p+pr] = max(dp[i+1][c][p+pr], dp[i][j][p]+m)
+res = -1
+for i in range(1, P):
+    if dp[-1][C][i] >= M:
+        res = i
+        break
+print(res)
