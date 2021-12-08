@@ -5,8 +5,10 @@ def expand(sx, sy, ex, ey, d):
 
   
     rx, ry = ex+dx[d], ey+dy[d] #나머지 들어갈곳
+    
     val = gra[ex][ey] #y
     
+    #비율칸에 퍼트리기
     for k, v in G[d].items():
         for a, b in v:
             e = int(gra[ex][ey]*k)
@@ -16,18 +18,14 @@ def expand(sx, sy, ex, ey, d):
             else:
                 gra[x][y] += e
             val -= e
+    
+    #남은거 있으면 나머지칸
     if val:
         if not (0<=rx <N and 0<=ry<N):
             res += val
         else:
             gra[rx][ry] += val
     gra[ex][ey] = 0
-
-
-        
-    
-        
-    
 
 
 
@@ -44,8 +42,8 @@ while flag:
         if not flag: break
         for _ in range(L):
             xx,yy = dx[d]+x, dy[d]+y
-            #if gra[xx][yy]:
-            expand(x, y, xx, yy, d)
+            if gra[xx][yy]:
+                expand(x, y, xx, yy, d)
             if xx == 0 and yy == 0:
                 flag = False
                 break
