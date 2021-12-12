@@ -29,8 +29,7 @@ def on(i, j, d):
                     cx, cy = nx, ny
                 else:
                     up[(cx, cy)]  = k
-                    if k > 2:
-                        n_wind.append((cx, cy))
+                    n_wind.append((cx, cy))
                     
         wind = n_wind
 
