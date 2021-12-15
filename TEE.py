@@ -1,134 +1,96 @@
+
 import sys
 input = sys.stdin.readline
 from collections import defaultdict
-dx, dy =[0, 0, 0, -1, 1], [0, 1, -1, 0, 0]
-swap_dir = [[],[3,4],[3,4],[1,2],[1,2]]
-
-def within(x, y):
-    if not (0<=x<N and 0<=y<M):
-        return False
-    return True
-def next_wind(dir):
-    return [[0,dir],[swap_dir[dir][0],dir],[swap_dir[dir][1],dir]]
-    
-
-def on(i, j, d):
-    if not within(i, j): return
-    wind = [(i, j)]
-    up = defaultdict(int)
-    up[(i, j)] += 5
-    for k in range(4, 0, -1):
-        n_wind = []
-        for x, y in wind:
-            cx, cy = x, y
-            for tot_dir in next_wind(d):
-                for k in tot_dir:
-                    nx, ny = cx+dx[k], cy+dy[k]
-                    if not within(nx, ny): break
-                    if wall[cx][cy][nx][ny] == 1: break
-                    cx, cy = nx, ny
-                else:
-                    up[(cx, cy)]  = k
-                    n_wind.append((cx, cy))
-                    
-        wind = n_wind
-
-    for pos, v in up.items():
-        temp[pos[0]][pos[1]] += v
-
-
+dx, dy = [0, 0, -1, 0, 1], [0, 1, 0, -1, 0]
+def control(st, order):
+    temp = defaultdict(int)
+    for x in order:
+        m1 = len(st[x])
+        m2 = len(st[x+1]) if x < order[-1] else 0
         
-def control():
-    
-    up_down = defaultdict(int)
-    for x in range(N):
-        for y in range(M):
+        for y in range(len(st[x])):
             for k in [1, 4]:
                 xx, yy = dx[k]+x, dy[k]+y
-                if not within(xx, yy): continue
-                if wall[x][y][xx][yy] == 1: continue
-                cha = abs(temp[xx][yy] - temp[x][y])
-                cha = cha//4
-                a, b = cha, cha
-                if temp[xx][yy] > temp[x][y]:
-                    b = -cha
+                if k == 1 and yy >=m1: continue
+                if k == 4 and not (xx <= order[-1] and yy < m2): continue
+
+                diff = abs(st[xx][yy] - st[x][y]) // 5
+                if diff == 0: continue
+                a, b = diff, diff
+                if st[xx][yy] > st[x][y]:
+                    b = -b
                 else:
-                    a = -cha
-                up_down[(xx, yy)] += b
-                up_down[(x, y)] += a
+                    a = -a
+                temp[(xx, yy)] += b
+                temp[(x, y)] += a
+    for k, v in temp.items():
+        st[k[0]][k[1]] += v
+
+   
+
+    n_arr = []
+    for i in order:
+        while st[i]:
+            n_arr.append(st[i].pop(0))
+
+    return n_arr   
+
+def roll(st):
+
+    order = [0]
+    while True:
+        n_order = []
+        a = order[-1] + 1 
+        if not (a + len(st[order[-1]]) <= N): break
+        for i in range(len(st[order[0]])):
+            for j in range(len(order)-1, -1, -1):
+                st[a+i].append(st[order[j]].pop(0))
+            n_order.append(a+i)
+        order = n_order
 
 
-    for k , v in up_down.items():
-        if temp[k[0]][k[1]] + v < 0:
-            temp[k[0]][k[1]] = 0
-        else:
-            temp[k[0]][k[1]] += v
+    if order[-1] != N-1:
+        order += [x for x in range(order[-1]+1, N)]
 
+    return control(st, order)
+   
 
-
-        
             
-            
-                    
-    
+N, K = map(int, input().split())
+arr = list(map(int, input().split()))
 
-#main
-N, M, K = map(int, input().split())
-gra = [list(map(int, input().split())) for _ in range(N)]
-wall = [[[[0]*M for _ in range(N)] for _ in range(M)] for _ in range(N)]
-temp = [[0]*M for _ in range(N)]
 
-#벽만들기
-for _ in range(int(input())):
-    x, y, t = map(int, input().split())
-    x, y = x-1, y-1
-    if t == 0: 
-        wall[x][y][x-1][y] = 1
-        wall[x-1][y][x][y] = 1
-    else:
-        wall[x][y][x][y+1] = 1
-        wall[x][y+1][x][y] = 1
-        
-#온풍기, check 해야하는 칸
-heater, check = [], []
-for i in range(N):
-    for j in range(M):
-        if gra[i][j] == 0: continue
-        if gra[i][j] == 5:
-            check.append((i, j))
-        else:
-            heater.append((i, j))
-def down():
+cnt = 0
+while True:
+    #print("=====================")
+    #1) 최솟값 += 1
+    mini = min(arr)
     for i in range(N):
-        for j in range(M):
-            if i == 0 or j == 0 or i == N-1 or j == M-1:
-                if temp[i][j]:
-                    temp[i][j] -= 1
-                    
-                   
-    
-            
-#답 도출 시작
-res = 101
-for r in range(1, 101):
-    
-    #1) 히터 켜기 
-    for x, y in heater:
-        d = gra[x][y]
-        on(x+dx[d], y+dy[d], d)
+        if mini == arr[i]:
+            arr[i] += 1
 
+    #print("1)최솟값:", arr)
     
-    #2) 온도 조절
-    control()
+    #2)어항 쌓기
+    st = [[a] for a in arr]
+    arr = roll(st)
     
-    #3) 1행, N-1행, 1열, M-1열 down
-    down()
+    #print("어항쌓기:", arr)
+    #3) 180도 turn
+    gra = [[arr[N - i-1], arr[i]] for i in range(N//2)]
+    gra.reverse()
+    temp = []
+    for i in range(N//4):
+        gra[i].reverse()
+        temp.append(gra[N//2-i-1]+gra[i])
+    temp.reverse()
+    #print("180도 회전:", temp)
+
+    arr = control(temp, [x for x in range(N//4)])
+    #print("온도조절:", arr)
+    cnt += 1
+    if max(arr) - min(arr)  <= K: break
+
+print(cnt)
     
-    for x, y in check:
-        if temp[x][y] < K: break
-    else:
- 
-        res = r
-        break
-    
-print(res)

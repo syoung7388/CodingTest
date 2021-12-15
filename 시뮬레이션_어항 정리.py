@@ -1,6 +1,8 @@
 from collections import deque
-
 from collections import defaultdict
+import sys
+input = sys.stdin.readline
+
 def control(gra):
     temp = defaultdict(int)
     n, m = len(gra), len(gra[0])
@@ -73,16 +75,6 @@ def turn():
         gra[i].reverse()
     
     return control(gra)
-
-
-
-
-
-    
-
-
-    
-            
 
 
 N, K = map(int, input().split())
