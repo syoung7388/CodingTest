@@ -1,93 +1,81 @@
-from collections import defaultdict
 import sys
 input = sys.stdin.readline
-
-def roll(gra):
-    order = [0]
-    
-    while True:
-        a = order[-1]       
-        n = len(gra[order[0]]) #몇명에게 쌓이는지
-        m = len(order) #쌓이는 칸수 (idx)
-        if (a + n) >= N: break
-        n_order = []
-        for i in range(n): 
-            for j in range(m-1, -1, -1):
-                gra[a+i+1].append(gra[order[j]].pop(0))
-            n_order.append(a+i+1)
-        order = n_order
+dx, dy = [-1, -1, 0, 1, 1, 1, 0, -1], [0, -1, -1, -1, 0, 1, 1, 1]
 
 
-    l = len(gra[order[0]])
-    gra = [gra[i]+[-1]*(l-len(gra[i])) for i in range(order[0], N)]
 
-    return control(gra)
+def DFS(sx, sy, s, G, F):
+    global res
+    res = max(res, s)
+    gra = [g[:] for g  in G]
+    fish = [f[:] for f in F]
 
-def control(gra):
-    n, m  = len(gra), len(gra[0])
-    fish_mv = defaultdict(int)
-    for x in range(n):
-        for y in range(m):
-            if gra[x][y] == -1: continue
-            for a, b in [(0, 1), (1, 0)]:
-                xx, yy = x+a, y+b
-                if not (0<=xx<n and 0<=yy<m) or gra[xx][yy] == -1: continue
-                diff = abs(gra[xx][yy] - gra[x][y]) // 5
+    for i in range(1, 17):
+        if not fish[i]: continue
+        x, y = fish[i]
+        n, d = gra[x][y]
+        if n == -1: continue
+        for j in range(8):
+            k = (d+j)%8
 
-                if diff == 0: continue
-                c, d = diff, diff
-                if gra[xx][yy] > gra[x][y]: d = -d
-                else: c = -c
+            xx, yy = dx[k]+x, dy[k]+y
+            if not (0<=xx<N and 0<=yy<N) or gra[xx][yy][0] == -1: continue
 
-                fish_mv[(xx, yy)] += d
-                fish_mv[(x, y)] += c
-    
-    for k, v in fish_mv.items():
-        gra[k[0]][k[1]] += v
+            #물고기 변경
+            gra[xx][yy], gra[x][y] = [gra[x][y][0], k], gra[xx][yy]
+            fish[i] = [xx, yy]
+            fish[gra[x][y][0]] = [x, y]
 
-    n_arr = []
-    for i in range(n):
-        for j in range(m):
-            if gra[i][j] == -1: break
-            n_arr.append(gra[i][j])
-    return n_arr
-                
-                
+            break
+
+
+  
+
+    d = gra[sx][sy][1]
+    gra[sx][sy] = [0, 0] #물고기 먹음
+    for i in range(1, 5):
+        xx, yy = i*dx[d]+sx, i*dy[d]+sy
+        if not (0<=xx<N and 0<=yy<N) or gra[xx][yy][0] == 0: continue
+
+        bf = gra[xx][yy][0]
+        gra[xx][yy][0] = -1
+        fish[bf] = []
+
+        DFS(xx, yy, s+bf ,gra, fish)
+
+        gra[xx][yy][0] = bf
+        fish[bf] = [xx, yy]
+
         
-def turn(arr):
-    n = N//4
-    one = arr[:n]
-    two = arr[n:2*n]
-    three = arr[2*n:3*n]
-    four = arr[3*n:]
-    one.reverse()
-    three.reverse()
+        
 
 
-    z = list(map(list, zip(four, one, two, three)))
-    return control(z)
-    
-    
-    
-#main
-N, K = map(int, input().split())
-arr = list(map(int, input().split()))
-cnt = 0
 
 
-while True:
-    #1)
-    mini = min(arr)
-    for i in range(N):
-        if arr[i] == mini:
-            arr[i] += 1
-   #2) 공중부양, 정리, 일렬
-    gra = [[a] for a in arr]
-    arr = roll(gra)
 
-    #3) N//4 turn
-    arr = turn(arr)
 
-    cnt += 1
-    if max(arr) - min(arr) <= K: break
-print(cnt)
+
+
+
+
+N = 4
+gra = []
+fish = [[] for _ in range(17)]
+
+for j in range(N):
+    arr = list(map(int, input().split()))
+    a = []
+    for i in range(0, N*2, 2):
+        n, d = arr[i], arr[i+1]
+        a.append([n, d-1])
+        fish[n] = [j, i//2]
+    gra.append(a)
+
+st = gra[0][0][0]
+gra[0][0][0] = -1
+fish[st] = []
+res = 0
+DFS(0, 0, st, gra, fish)
+
+
+print(res)

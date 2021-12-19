@@ -1,96 +1,60 @@
+r = {0:[1], 1:[2], 2:[3], 3:[4], 4:[5], 5:[6, 21], 6:[7], 7:[8], 8:[9],9:[10], 10:[11, 30], 11:[12], 12:[13],13:[14], 14:[15], 15:[16, 27], 16:[17], 17:[18], 18:[19], 19:[20], 20:[32], 21:[22], 22:[23], 23:[24], 24:[25], 25:[26], 26:[20], 27:[28], 28:[29], 29: [24],
 
-import sys
-input = sys.stdin.readline
-from collections import defaultdict
-dx, dy = [0, 0, -1, 0, 1], [0, 1, 0, -1, 0]
-def control(st, order):
-    temp = defaultdict(int)
-    for x in order:
-        m1 = len(st[x])
-        m2 = len(st[x+1]) if x < order[-1] else 0
-        
-        for y in range(len(st[x])):
-            for k in [1, 4]:
-                xx, yy = dx[k]+x, dy[k]+y
-                if k == 1 and yy >=m1: continue
-                if k == 4 and not (xx <= order[-1] and yy < m2): continue
+     30:[31], 31:[24], 32:[32]
+}
 
-                diff = abs(st[xx][yy] - st[x][y]) // 5
-                if diff == 0: continue
-                a, b = diff, diff
-                if st[xx][yy] > st[x][y]:
-                    b = -b
-                else:
-                    a = -a
-                temp[(xx, yy)] += b
-                temp[(x, y)] += a
-    for k, v in temp.items():
-        st[k[0]][k[1]] += v
-
-   
-
-    n_arr = []
-    for i in order:
-        while st[i]:
-            n_arr.append(st[i].pop(0))
-
-    return n_arr   
-
-def roll(st):
-
-    order = [0]
-    while True:
-        n_order = []
-        a = order[-1] + 1 
-        if not (a + len(st[order[-1]]) <= N): break
-        for i in range(len(st[order[0]])):
-            for j in range(len(order)-1, -1, -1):
-                st[a+i].append(st[order[j]].pop(0))
-            n_order.append(a+i)
-        order = n_order
+v= [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 13, 16, 19, 25, 30, 35, 28, 27, 26, 22, 24, 0]
 
 
-    if order[-1] != N-1:
-        order += [x for x in range(order[-1]+1, N)]
 
-    return control(st, order)
-   
+
+
+def DFS(L, s):
+    global res
+    if L == 10:
+        res = max(res, s)
+        return
+
+    for i in range(4):
+        if arr[i] == 1: continue
+        cur = pos[i]
+
+        if len(r[cur]) == 2:
+            n = z[L] - 1
+            cur = r[cur][1]
+        else:
+            n = z[L]
+
+        for _ in range(n):
+            cur = r[cur][0]
+
+        if cur == 32:
+            arr[i] = 1
+
+        if cur == 32 or ch[cur] == 0:
+            bf = pos[i]
+            ch[bf] = 0
+            ch[cur] = 1
+            pos[i] = cur
+            DFS(L+1, s+v[cur])
+            ch[cur] = 0
+            ch[bf] = 1
+            pos[i] = bf
+            arr[i] = 0
 
             
-N, K = map(int, input().split())
-arr = list(map(int, input().split()))
+            
+            
 
 
-cnt = 0
-while True:
-    #print("=====================")
-    #1) 최솟값 += 1
-    mini = min(arr)
-    for i in range(N):
-        if mini == arr[i]:
-            arr[i] += 1
 
-    #print("1)최솟값:", arr)
-    
-    #2)어항 쌓기
-    st = [[a] for a in arr]
-    arr = roll(st)
-    
-    #print("어항쌓기:", arr)
-    #3) 180도 turn
-    gra = [[arr[N - i-1], arr[i]] for i in range(N//2)]
-    gra.reverse()
-    temp = []
-    for i in range(N//4):
-        gra[i].reverse()
-        temp.append(gra[N//2-i-1]+gra[i])
-    temp.reverse()
-    #print("180도 회전:", temp)
+z = list(map(int, input().split()))
 
-    arr = control(temp, [x for x in range(N//4)])
-    #print("온도조절:", arr)
-    cnt += 1
-    if max(arr) - min(arr)  <= K: break
+pos = [0]*4
+arr = [0]*4
+ch = [0]*33
 
-print(cnt)
-    
+res = 0
+DFS(0, 0)
+print(res)
+
